@@ -1,0 +1,104 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+public class RedBlackTree {
+    private RedBlackTree$Node root;
+
+    public RedBlackTree() {
+    }
+
+    public boolean add(int var1) {
+        if (this.root != null) {
+            boolean var2 = this.addNode(this.root, var1);
+            this.root = this.rebalance(this.root);
+            this.root.color = RedBlackTree.Color.BLACK;
+            return var2;
+        } else {
+            this.root = new RedBlackTree$Node(this);
+            this.root.color = RedBlackTree.Color.BLACK;
+            this.root.value = var1;
+            return true;
+        }
+    }
+
+    private boolean addNode(RedBlackTree$Node var1, int var2) {
+        if (var1.value == var2) {
+            return false;
+        } else {
+            boolean var3;
+            if (var1.value > var2) {
+                if (var1.leftChild != null) {
+                    var3 = this.addNode(var1.leftChild, var2);
+                    return var3;
+                } else {
+                    var1.leftChild = new RedBlackTree$Node(this);
+                    var1.leftChild.color = RedBlackTree.Color.RED;
+                    var1.leftChild.value = var2;
+                    return true;
+                }
+            } else if (var1.rightChild != null) {
+                var3 = this.addNode(var1.rightChild, var2);
+                var1.rightChild = this.rebalance(var1.rightChild);
+                return var3;
+            } else {
+                var1.rightChild = new RedBlackTree$Node(this);
+                var1.rightChild.color = RedBlackTree.Color.RED;
+                var1.rightChild.value = var2;
+                return true;
+            }
+        }
+    }
+
+    private RedBlackTree$Node rebalance(RedBlackTree$Node var1) {
+        RedBlackTree$Node var2 = var1;
+
+        boolean var3;
+        do {
+            var3 = false;
+            if (var2.rightChild != null && var2.rightChild.color == RedBlackTree.Color.RED && (var2.leftChild == null || var2.leftChild.color == RedBlackTree.Color.BLACK)) {
+                var3 = true;
+                var2 = this.rightSwap(var2);
+            }
+
+            if (var2.leftChild != null && var2.leftChild.color == RedBlackTree.Color.RED && var2.leftChild.leftChild != null && var2.leftChild.leftChild.color == RedBlackTree.Color.RED) {
+                var3 = true;
+                var2 = this.leftSwap(var2);
+            }
+
+            if (var2.leftChild != null && var2.leftChild.color == RedBlackTree.Color.RED && var2.rightChild != null && var2.rightChild.color == RedBlackTree.Color.RED) {
+                var3 = true;
+                this.colorSwap(var2);
+            }
+        } while(var3);
+
+        return var2;
+    }
+
+    private RedBlackTree$Node leftSwap(RedBlackTree$Node var1) {
+        RedBlackTree$Node var2 = var1.leftChild;
+        RedBlackTree$Node var3 = var2.rightChild;
+        var2.rightChild = var1;
+        var1.leftChild = var3;
+        var2.color = var1.color;
+        var1.color = RedBlackTree.Color.RED;
+        return var2;
+    }
+
+    private RedBlackTree$Node rightSwap(RedBlackTree$Node var1) {
+        RedBlackTree$Node var2 = var1.rightChild;
+        RedBlackTree$Node var3 = var2.leftChild;
+        var2.leftChild = var1;
+        var1.rightChild = var3;
+        var2.color = var1.color;
+        var1.color = RedBlackTree.Color.RED;
+        return var2;
+    }
+
+    private void colorSwap(RedBlackTree$Node var1) {
+        var1.rightChild.color = RedBlackTree.Color.BLACK;
+        var1.leftChild.color = RedBlackTree.Color.BLACK;
+        var1.color = RedBlackTree.Color.RED;
+    }
+}
